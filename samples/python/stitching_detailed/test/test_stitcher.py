@@ -24,7 +24,7 @@ class TestStitcher(unittest.TestCase):
                                    (700, 1811),
                                    atol=max_image_shape_derivation)
 
-    @unittest.skip("skip boat test (high resuolution ran >30s)")
+    #@unittest.skip("skip boat test (high resuolution ran >30s)")
     def test_stitcher_boat1(self):
         settings = {"warp": "fisheye",
                     "wave_correct": "no",
@@ -44,7 +44,7 @@ class TestStitcher(unittest.TestCase):
                                    (14488,  7556),
                                    atol=max_image_shape_derivation)
 
-    @unittest.skip("skip boat test (high resuolution ran >30s)")
+    #@unittest.skip("skip boat test (high resuolution ran >30s)")
     def test_stitcher_boat2(self):
         settings = {"warp": "compressedPlaneA2B1",
                     "seam": "dp_colorgrad",
