@@ -42,11 +42,11 @@ class ImageToMegapixScaler:
         else:
             return img
 
-    def get_original_img_sizes_after_resize(self, resized_imgs):
+    def estimate_original_img_size(self, resized_img):
         """ sizes in (width, height) tuples """
-        downscaled_img_sizes = [np.array([img.shape[1], img.shape[0]])
-                                for img in resized_imgs]
-        return [size / self.scale for size in downscaled_img_sizes]
+        downscaled_img_size = np.array([resized_img.shape[1],
+                                        resized_img.shape[0]])
+        return (downscaled_img_size / self.scale).astype(int).tolist()
 
     def get_aspect_to(self, scaler):
         if self.is_scale_set and scaler.is_scale_set:

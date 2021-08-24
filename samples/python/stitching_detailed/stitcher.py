@@ -133,7 +133,10 @@ class Stitcher:
             return self.blender.blend()
 
     def input_images(img_names):
+        print("original sizes")
         for name in img_names:
+            img = Stitcher.read_image(name)
+            print(img.shape[1], img.shape[0])
             yield Stitcher.read_image(name)
 
     def resize_medium_resolution(self, img_names):
@@ -167,10 +170,10 @@ class Stitcher:
         return self.wave_corrector.correct(cameras)
 
     def estimate_final_panorama_dimensions(self, imgs, cameras):
-        original_sizes = \
-            self.work_scaler.get_original_img_sizes_after_resize(imgs)
+        original_sizes = [self.work_scaler.estimate_original_img_size(img)
+                          for img in imgs]
 
-        self.set_scale_by_medium_resolution_images(self.compose_scaler, imgs)
+        self.set_scale_by_medium_resolution_image(self.compose_scaler, imgs[0])
 
         compose_work_aspect = self.get_compose_work_aspect()
 
@@ -199,7 +202,7 @@ class Stitcher:
             self.blender.prepare(corners, sizes)
 
     def resize_low_resolution(self, imgs):
-        self.set_scale_by_medium_resolution_images(self.seam_scaler, imgs)
+        self.set_scale_by_medium_resolution_image(self.seam_scaler, imgs[0])
         aspect = self.get_seam_work_aspect()
         scale = self.work_scaler.scale * aspect
 
@@ -250,10 +253,11 @@ class Stitcher:
         scaler.set_scale_if_not_set(scale)
         return scaler.resize(img)
 
-    def set_scale_by_medium_resolution_images(self, scaler, imgs):
-        original_sizes = \
-            self.work_scaler.get_original_img_sizes_after_resize(imgs)
+    def set_scale_by_medium_resolution_image(self, scaler, img):
+        original_size = self.work_scaler.estimate_original_img_size(img)
+        print("estimated size")
+        print(original_size)
         scale = scaler.get_scale_by_resolution(
-            original_sizes[0][1] * original_sizes[0][0]
+            original_size[0] * original_size[1]
             )
         scaler.set_scale_if_not_set(scale)
